@@ -1,0 +1,93 @@
+<style>
+  #post-table-page {
+    margin-top: 2rem;
+  }
+</style>
+
+<div id="post-table-page">
+  <div class="row">
+    <!-- side nav -->
+    <div class="col s2">
+      <%- include('sidenav')%>
+    </div>
+    <div class="col s10">
+      <div class="content">
+        content
+      </div>
+      <!-- table -->
+      <table class="table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Filename</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Created Date</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- loop -->
+          <%if(typeof files != 'undefined'){%> <%for(let file of files){%>
+          <tr>
+            <td
+              contenteditable
+              onblur="file_name_update(this)"
+              data-id="<%=file.id%>"
+            >
+              <%=file.name%>
+            </td>
+            <td><%=file.filename%></td>
+            <td><%=file.type%></td>
+            <td><%=file.size%></td>
+            <td><%=new Date(file.date).toLocaleString()%></td>
+            <td>
+              <button onclick="file_delete('<%=file.id%>')" class="btn red">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <%}%> <%}%>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- post-table pagination -->
+  <div class="center">
+    <ul class="pagination">
+      <%for(let p of pages){%>
+      <li class="<%= p == page ? 'active': ''%>">
+        <a href="?page=<%=p%>"><%=p%></a>
+      </li>
+      <%}%>
+    </ul>
+  </div>
+</div>
+
+<script>
+  async function file_name_update(e) {
+    let [id, name] = [e.dataset.id, e.innerText];
+
+    try {
+      let res = await axios.put(
+        `/dashboard/mp3-file-update-api/?file_id=${id}`,
+        { name },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      // success
+      M.toast({ html: res.data.message });
+    } catch (error) {
+      console.log(error.response);
+      if (error.response.date.error) {
+        M.toast({ html: error.response.date.error });
+      }
+      M.toast({ html: error.response.statusText });
+    }
+  }
+</script>

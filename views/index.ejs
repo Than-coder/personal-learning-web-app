@@ -1,0 +1,57 @@
+<style>
+  #home-page {
+    margin-top: 2rem;
+  }
+  .post-grid {
+    display: grid;
+    grid-template-columns: 9fr 3fr;
+    grid-gap: 10px;
+  }
+  .collection-item {
+    text-transform: capitalize;
+  }
+</style>
+
+<div id="home-page" class="container">
+  <!-- grid -->
+  <div class="row">
+    <!-- content -->
+    <div class=" col s9 post-content">
+      <%for(let post of posts){%>
+      <div class="card">
+        <div class="card-content">
+          <div class="card-title">
+            <a href="/post/?post_id=<%= post.id%>"><%= post.title%></a>
+          </div>
+          <div>
+            <strong>Date:</strong>
+            <i><%=new Date(post.date).toLocaleString()%></i>
+          </div>
+          <%= remove_tag(post.body.substring(0,500))%>
+        </div>
+      </div>
+      <%}%>
+    </div>
+
+    <!-- categories -->
+    <div class=" col s3 post-categories">
+      <ul class="collection with-header">
+        <li class="collection-header">Categories</li>
+        <!-- loop -->
+        <%for(let cate of categories){%>
+        <li
+          class="collection-item <%= typeof category_name != 'undefined' ? category_name == cate.name ? 'active':'' :''%>"
+        >
+          <a
+            class="<%= typeof category_name != 'undefined' ? category_name == cate.name ? 'black-text':'' :''%>"
+            href="/post/category/?name=<%=cate.name%>"
+            ><%=cate.name%></a
+          >
+        </li>
+        <%}%>
+      </ul>
+    </div>
+  </div>
+  <!-- pagination -->
+  <%- include('partials/pagination')%>
+</div>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="shortcut icon" href="/icon/icon.jpg" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/material.css" />
+    <script src="/js/material.js"></script>
+    <script src="/js/axios.js"></script>
+    <title>
+      <%= typeof title != 'undefined' ? title : 'Learning English'%>
+    </title>
+  </head>
+
+  <body>
+    <%- include('partials/navbar')%> <%- body%>
+
+    <script>
+      M.AutoInit();
+    </script>
+  </body>
+</html>

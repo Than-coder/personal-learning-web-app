@@ -1,0 +1,74 @@
+<style>
+  #post-edit {
+    width: 95%;
+    margin: 2rem auto;
+  }
+  .file-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  .file-item span {
+    cursor: pointer;
+    color: red;
+  }
+  .file-item a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
+
+<script src="/ckeditor/ckeditor.js"></script>
+<script src="/js/jquery.js"></script>
+
+<div id="post-edit">
+  <button onclick="go_back()" class="btn">Go Back</button>
+  <div class="">
+    <div class="row">
+      <div class="col s9">
+        <%if(typeof post != 'undefined' && post != null){%>
+        <!-- title -->
+        <div class="input-field">
+          <input type="hidden" id="post-id" value="<%=post.id%>" />
+          <input
+            type="text"
+            placeholder="Title..."
+            id="title"
+            value="<%=post.title%>"
+          />
+          <label for="title">Title</label>
+        </div>
+        <!-- body -->
+        <div id="editor"><%-post.body%></div>
+        <%}%>
+      </div>
+      <div class="col s3">
+        <div class="button">
+          <button
+            onclick="post_update(true)"
+            class="btn <%= post.is_public == 0 ? 'grey':''%>"
+          >
+            Update
+          </button>
+          <button
+            onclick="post_update(false)"
+            class="btn <%= post.is_public == 1 ? 'grey':''%>"
+          >
+            Draft
+          </button>
+        </div>
+        <!-- category -->
+        <%- include('categories')%>
+        <!-- mp3 files -->
+        <div>
+          <!-- file input -->
+          <%- include('file_input')%>
+          <!-- file list-->
+          <%- include('file_list')%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/post_edit.js"></script>

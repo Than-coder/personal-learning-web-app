@@ -1,0 +1,86 @@
+<div class="file-input">
+  <input onchange="file_input_change(this)" type="file" id="file-input" />
+  <!-- progress -->
+  <div style="width:0%;" class="progress green"></div>
+</div>
+
+<script>
+  async function file_input_change(e) {
+    let post_id = document.querySelector("#post-id").value;
+    let file = e.files[0];
+    let formData = new FormData();
+    // check mp3 file
+    if (!file.type.startsWith("audio")) return false;
+    // append
+    formData.append("file", file);
+    // send server
+    try {
+      let res = await axios.post(
+        `/dashboard/mp3-file-upload-api/?post_id=${post_id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          },
+          onUploadProgress: file_upload_progress
+        }
+      );
+      // success
+      M.toast({ html: res.data.message });
+      // refresh
+      add_mp3_list(post_id);
+      // setTimeout(()=>{
+      //   window.location.reload()
+      // },1000)
+    } catch (error) {
+      console.log(error.response);
+      if (error.response.data.error) {
+        M.toast({ html: error.response.data.error });
+      }
+      M.toast({ html: error.response.statusText });
+    }
+  }
+
+  // fetch server && add mp3-file-list
+  async function add_mp3_list(id) {
+    let mp3_list = document.querySelector("#mp3-file-list");
+    try {
+      let res = await axios.get(
+        `/dashboard/mp3-file-find-post_id-api/?post_id=${id}`
+      );
+      if (!res.data.files) return false;
+      let ul = "";
+      for (let file of res.data.files) {
+        ul += `<li
+      data-filename="${file.filename}"
+      class="collection-item file-item tooltipped"
+      data-tooltip="${file.name}"
+      data-position="bottom"
+  >
+    <a href="/upload/mp3/${file.filename}">${file.name}</a
+    ><span data-id="${file.id}" onclick="file_delete(this)">Delete</span>
+  </li>`;
+      }
+      // set content
+      mp3_list.innerHTML = ul;
+    } catch (error) {
+      console.log(error.response);
+      if (error.response.data.error) {
+        M.toast({ html: error.response.data.error });
+      }
+      M.toast({ html: error.response.statusText });
+    }
+  }
+
+  // file_upload_progress
+  function file_upload_progress(e) {
+    let progress = document.querySelector(".progress");
+    let total = (e.loaded / e.total) * 100;
+    progress.style.width = `${total}%`;
+    if (total == 100) {
+      setTimeout(() => {
+        progress.style.width = "0%";
+      }, 1000);
+    }
+  }
+</script>

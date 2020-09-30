@@ -1,0 +1,111 @@
+<style>
+  #post-table-page {
+    margin-top: 2rem;
+  }
+</style>
+
+<div id="post-table-page">
+  <div class="row">
+    <!-- side nav -->
+    <div class="col s2">
+      <%- include('sidenav')%>
+    </div>
+    <div class="col s10">
+      <div class="content">
+        <div class="row">
+          <div class="col s3">
+            <button onclick="new_post()" class="btn">New Post</button>
+          </div>
+        </div>
+      </div>
+      <!-- table -->
+      <table class="table-striped">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Public</th>
+            <th>Created Date</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- loop -->
+          <%if(typeof posts != 'undefined'){%> <%for(let post of posts){%>
+          <tr>
+            <td><%=post.title%></td>
+            <td><%=post.category_name%></td>
+            <td><%=post.is_public == 1 ? 'Public':'Draft'%></td>
+            <td><%=new Date(post.date).toLocaleString()%></td>
+            <td>
+              <a
+                href="/dashboard/post-edit/?post_id=<%=post.id%>"
+                class="btn default"
+                >Edit</a
+              >
+            </td>
+            <td>
+              <button onclick="post_delete('<%=post.id%>')" class="btn red">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <%}%> <%}%>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- post-table pagination -->
+  <div class="center">
+    <ul class="pagination">
+      <%for(let p of pages){%>
+      <li class="<%= p == page ? 'active': ''%>">
+        <a href="?page=<%=p%>"><%=p%></a>
+      </li>
+      <%}%>
+    </ul>
+  </div>
+</div>
+
+<script>
+  async function new_post() {
+    try {
+      let res = await axios.post(
+        "/dashboard/post-table-new-post",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      // response post.id
+      if (res.data.post_id) {
+        window.location.href = `/dashboard/post-edit/?post_id=${res.data.post_id}`;
+      }
+    } catch (error) {
+      console.log(error.response);
+      M.toast({ html: error.response.statusText });
+    }
+  }
+
+  // post delete
+  async function post_delete(id) {
+    if (!window.confirm("Are You Sure?")) return false;
+    try {
+      let res = await axios.delete(
+        `/dashboard/post-table-delete-post/?post_id=${id}`
+      );
+      // response
+      M.toast({ html: "Post Deleted" });
+      setTimeout(() => {
+        window.location.href = "/dashboard/post-table";
+      }, 1000);
+    } catch (error) {
+      console.log(error.response);
+      M.toast({ html: error.response.statusText });
+    }
+  }
+</script>

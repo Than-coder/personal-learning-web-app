@@ -1,0 +1,115 @@
+<style>
+  #post-table-page {
+    margin-top: 2rem;
+  }
+</style>
+
+<div id="post-table-page">
+  <div class="row">
+    <!-- side nav -->
+    <div class="col s2">
+      <%- include('sidenav')%>
+    </div>
+    <div class="col s10">
+      <div class="content">
+        <div class="row">
+          <div class="col s3">
+            <button onclick="new_category()" class="btn">New Category</button>
+          </div>
+        </div>
+      </div>
+      <!-- table -->
+      <table class="table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Created Date</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- loop -->
+          <%if(typeof categories != 'undefined'){%> <%for(let category of
+          categories){%>
+          <tr>
+            <td data-id="<%=category.id%>">
+              <%=category.name%>
+            </td>
+            <td><%=new Date(category.date).toLocaleString()%></td>
+            <td>
+              <button
+                onclick="category_delete('<%=category.id%>')"
+                class="btn red"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          <%}%> <%}%>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- post-table pagination -->
+  <div class="center">
+    <ul class="pagination">
+      <%for(let p of pages){%>
+      <li class="<%= p == page ? 'active': ''%>">
+        <a href="?page=<%=p%>"><%=p%></a>
+      </li>
+      <%}%>
+    </ul>
+  </div>
+</div>
+
+<script>
+  async function category_delete(id) {
+    if (!window.confirm("Are You Sure?")) return false;
+    try {
+      let res = await axios.delete(
+        `/dashboard/category-table-delete-api/?category_id=${id}`
+      );
+      // success
+      M.toast({ html: res.data.message });
+      // reload
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.log(error.response);
+      if (error.response.date.error) {
+        M.toast({ html: error.response.date.error });
+      }
+      M.toast({ html: error.response.statusText });
+    }
+  }
+
+  async function new_category() {
+    let name = window.prompt("New Category Name", "untitled");
+    try {
+      let res = await axios.post(
+        "/dashboard/category-table-new-api",
+        { name },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      // success
+      M.toast({ html: res.data.message });
+      // reload
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.log(error.response);
+      if (error.response.date.error) {
+        M.toast({ html: error.response.date.error });
+      }
+      M.toast({ html: error.response.statusText });
+    }
+  }
+</script>

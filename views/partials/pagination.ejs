@@ -1,0 +1,26 @@
+<!-- home pagination -->
+<%if(typeof pagination_name != 'undefined' && pagination_name == 'home'){%>
+    <div class="center">
+      <ul class="pagination">
+        <%for(let p of pages){%>
+        <li class="<%= p == page ? 'active': ''%>">
+          <a href="?page=<%=p%>"><%=p%></a>
+        </li>
+        <%}%>
+      </ul>
+    </div>
+    <%}%>
+    <!-- category pagination -->
+    <%if(typeof pagination_name != 'undefined' && pagination_name ==
+    'category'){%>
+    <div class="center">
+      <ul class="pagination">
+        <%for(let p of pages){%>
+        <li class="<%= p == page ? 'active': ''%>">
+          <a href="/post/category/?name=<%=category_name%>&page=<%=p%>"><%=p%></a>
+        </li>
+        <%}%>
+      </ul>
+    </div>
+    <%}%>
+  </div>

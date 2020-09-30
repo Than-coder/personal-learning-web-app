@@ -1,0 +1,11 @@
+<div>
+        <h4>Categories</h4>
+        <%if(typeof categories != 'undefined'){%>
+        <select id="categories">
+            <!-- loop -->
+          <%for(let cate of categories){%>
+          <option <%= post.category_name == cate.name? 'selected' :''%> ><%=cate.name%></option>
+          <%}%>
+        </select>
+        <%}%>
+      </div>

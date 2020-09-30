@@ -1,0 +1,22 @@
+<ul class="collection">
+  <li
+    class="collection-item <%= typeof page_name != 'undefined' ? page_name == 'home'? 'active' :'' :'active'%>"
+  >
+    <a class="black-text" href="/dashboard/">Dashboard Page</a>
+  </li>
+  <li
+    class="collection-item <%= typeof page_name != 'undefined' ? page_name == 'post'? 'active' :'' :''%>"
+  >
+    <a class="black-text" href="/dashboard/post-table">Post Table</a>
+  </li>
+  <li
+    class="collection-item <%= typeof page_name != 'undefined' ? page_name == 'category'? 'active' :'' :''%>"
+  >
+    <a class="black-text" href="/dashboard/category-table">Category Table</a>
+  </li>
+  <li
+    class="collection-item <%= typeof page_name != 'undefined' ? page_name == 'file'? 'active' :'' :''%>"
+  >
+    <a class="black-text" href="/dashboard/file-table">File Table</a>
+  </li>
+</ul>

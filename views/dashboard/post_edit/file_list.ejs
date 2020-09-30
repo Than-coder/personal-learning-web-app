@@ -1,0 +1,43 @@
+<div>MP3 Files</div>
+<ul id="mp3-file-list" class="collection with-header">
+  <!-- loop -->
+  <%if(typeof mp3_files != 'undefined'){%> <%for(let file of mp3_files){%>
+  <li
+    data-filename="<%=file.filename%>"
+    class="collection-item file-item tooltipped"
+    data-tooltip="<%=file.name%>"
+    data-position="bottom"
+  >
+    <a href="/upload/mp3/<%=file.filename%>"><%=file.name%></a
+    ><span data-id="<%=file.id%>" onclick="file_delete(this)">Delete</span>
+  </li>
+  <%}%> <%}%>
+</ul>
+
+<script>
+  async function file_delete(e) {
+    let id = e.dataset.id;
+
+    if (!window.confirm("Are You Sure?")) return false;
+    try {
+      let res = await axios.delete(
+        `/dashboard/mp3-file-delete-api/?file_id=${id}`
+      );
+
+      // success
+      M.toast({ html: res.data.message });
+      // remove element
+      e.parentElement.style.display = "none";
+      // refresh
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
+    } catch (error) {
+      console.log(error.response);
+      if (error.response.data.error) {
+        M.toast({ html: error.response.data.error });
+      }
+      M.toast({ html: error.response.statusText });
+    }
+  }
+</script>
